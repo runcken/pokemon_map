@@ -9,6 +9,9 @@ class Pokemon(models.Model):
         blank=True,
         verbose_name='Изображение'
     )
+    description = models.TextField(null=True)
+    title_en = models.TextField(null=True)
+    title_jp = models.TextField(null=True)
 
     def __str__(self):
         return f'{self.title}'
@@ -30,6 +33,3 @@ class PokemonEntity(models.Model):
     strength = models.IntegerField()
     defence = models.IntegerField()
     stamina = models.IntegerField()
-    description = models.TextField(null=True)
-    title_en = models.TextField(null=True)
-    title_jp = models.TextField(null=True)
