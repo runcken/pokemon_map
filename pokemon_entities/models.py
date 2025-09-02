@@ -31,3 +31,5 @@ class PokemonEntity(models.Model):
     defence = models.IntegerField()
     stamina = models.IntegerField()
     description = models.TextField(null=True)
+    title_en = models.TextField(null=True)
+    title_jp = models.TextField(null=True)
