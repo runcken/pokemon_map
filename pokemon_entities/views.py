@@ -48,7 +48,7 @@ def show_all_pokemons(request):
             image_url
         )
 
-    pokemons = Pokemon.objects.all()
+    pokemons = Pokemon.objects.all() #already
     pokemons_on_page = []
     for pokemon in pokemons:
         pokemons_on_page.append({
