@@ -15,7 +15,8 @@ class Pokemon(models.Model):
     previous_pokemon = models.ForeignKey(
         'self',
         on_delete=models.CASCADE,
-        null=True
+        null=True,
+        related_name='next_pokemon'
         )  
 
     def __str__(self):
