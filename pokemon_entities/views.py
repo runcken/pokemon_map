@@ -1,14 +1,11 @@
 import folium
 
-from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.utils import timezone
+from django.http import Http404
 
 import os
 import django
-
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'project.settings')
-django.setup()
 
 from pokemon_entities.models import Pokemon, PokemonEntity
 
@@ -66,24 +63,21 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    requested_pokemon = Pokemon.objects.get(id=pokemon_id)
-    
-    if requested_pokemon:
-        pokemon = requested_pokemon
-    else:
-        return HttpResponseNotFound('<h1>Такой покемон не найден</h1>')
+    try:
+        pokemon = Pokemon.objects.get(id=pokemon_id)
+    except pokemon.DoesNotExist:
+        raise Http404('нет такого покемона')
 
-    pokemon_entities = pokemon.entities.filter(id=pokemon_id)
+    pokemon_entity = pokemon.entities.get(id=pokemon_id)
+    image_url = request.build_absolute_uri(pokemon_entity.pokemon.image.url)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    for entity in pokemon_entities:
-        image_url = request.build_absolute_uri(entity.pokemon.image.url)
-        add_pokemon(
-            folium_map,
-            entity.lat,
-            entity.lon,
-            image_url
-        )
+    add_pokemon(
+        folium_map,
+        pokemon_entity.lat,
+        pokemon_entity.lon,
+        image_url
+    )
 
     pokemon_data = {
         'pokemon_id': pokemon.id,
