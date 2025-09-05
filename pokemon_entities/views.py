@@ -4,9 +4,6 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.http import Http404
 
-import os
-import django
-
 from pokemon_entities.models import Pokemon, PokemonEntity
 
 
@@ -106,7 +103,7 @@ def show_pokemon(request, pokemon_id):
                 next_pokemon.image.url
             )
         }
-    
+
     return render(request, 'pokemon.html', context={
         'map': folium_map._repr_html_(), 'pokemon': pokemon_data
     })

@@ -2,14 +2,18 @@ from django.db import models
 
 
 class Pokemon(models.Model):
-    title = models.CharField(max_length=200,verbose_name='Имя')
+    title = models.CharField(max_length=200, verbose_name='Имя')
     image = models.ImageField(
         upload_to='media',
         verbose_name='Изображение'
     )
     description = models.TextField(verbose_name='Описание', blank=True)
-    title_en = models.CharField(verbose_name='Имя(англ.)', blank=True)
-    title_jp = models.CharField(verbose_name='Имя(япон.)', blank=True)
+    title_en = models.CharField(
+        max_length=200, verbose_name='Имя(англ.)', blank=True
+    )
+    title_jp = models.CharField(
+        max_length=200, verbose_name='Имя(япон.)', blank=True
+    )
     previous_pokemon = models.ForeignKey(
         'self',
         on_delete=models.SET_NULL,
@@ -17,7 +21,7 @@ class Pokemon(models.Model):
         null=True,
         related_name='next_pokemon',
         verbose_name='Предыдущий покемон'
-        )  
+        )
 
     def __str__(self):
         return f'{self.title}'
