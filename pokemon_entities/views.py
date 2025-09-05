@@ -62,19 +62,23 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     try:
         pokemon = Pokemon.objects.get(id=pokemon_id)
-    except pokemon.DoesNotExist:
+    except Pokemon.DoesNotExist:
         raise Http404('нет такого покемона')
 
-    pokemon_entity = pokemon.entities.get(id=pokemon_id)
-    image_url = request.build_absolute_uri(pokemon_entity.pokemon.image.url)
+    time_now = timezone.now()
+    pokemon_entities = pokemon.entities.filter(
+        appeared_at__lte=time_now, disappeared_at__gte=time_now
+    )
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
-    add_pokemon(
-        folium_map,
-        pokemon_entity.lat,
-        pokemon_entity.lon,
-        image_url
-    )
+    for entity in pokemon_entities:
+        image_url = request.build_absolute_uri(entity.pokemon.image.url)
+        add_pokemon(
+            folium_map,
+            entity.lat,
+            entity.lon,
+            image_url
+        )
 
     pokemon_data = {
         'pokemon_id': pokemon.id,
@@ -94,7 +98,7 @@ def show_pokemon(request, pokemon_id):
             )
         }
 
-    next_pokemon = pokemon.next_pokemon.first()
+    next_pokemon = pokemon.next_pokemons.first()
     if next_pokemon:
         pokemon_data['next_evolution'] = {
             'title_ru': next_pokemon.title,
